@@ -31,7 +31,6 @@ RUN npm install
 
 COPY ./DevWhoops/ClientApp/ .
 RUN npm run-script build --prod
-RUN ls
 
 #wire up final container
 FROM base AS final

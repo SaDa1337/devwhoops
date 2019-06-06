@@ -1,0 +1,22 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: killer-terrier-sp-generic-web
+  labels:
+    app.kubernetes.io/name: sp-generic-web
+    helm.sh/chart: sp-generic-web-1.0.7
+    app.kubernetes.io/instance: killer-terrier
+    app.kubernetes.io/managed-by: Tiller
+  annotations:
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/proxy-buffer-size: 16k
+
+spec:
+  rules:
+    - host: sp-generic-web.test
+      http:
+        paths:
+          - path: /*
+            backend:
+              serviceName: killer-terrier-sp-generic-web
+              servicePort: 80

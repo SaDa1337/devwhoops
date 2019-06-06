@@ -1,0 +1,75 @@
+# Default values for orderservice.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+labels:
+  app:
+  team:
+  release:
+  os: linux
+
+replicaCount: 1
+
+containers:
+  ports:
+    containerPort: 80
+
+image:
+  repository: sada1337/devwhoops
+  tag: v1
+  pullPolicy: Always
+
+resources:
+
+nameOverride:
+fullnameOverride:
+
+env: {"ASPNETCORE_ENVIRONMENT": "Production"}
+
+service:
+  type: NodePort
+  port: 80
+  targetport: 80
+  sessionAffinity: ClientIP
+
+livenessProbe:
+  httpGet:
+    port: 80
+    path: /
+    scheme: HTTP
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    port: 80
+    path: /
+    scheme: HTTP
+  failureThreshold: 6
+  initialDelaySeconds: 20
+  timeoutSeconds: 3
+  periodSeconds: 5
+
+ingress:
+  enabled: true
+  annotations: {
+    "nginx.ingress.kubernetes.io/proxy-buffer-size": "16k",
+    "nginx.ingress.kubernetes.io/enable-cors": "true"
+  }
+  paths: [/*]
+  hosts:
+    - sp-generic-web.test
+    
+hpa:
+  enabled: false
+  maxReplicas: 6
+  cpu: {}
+  memory: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

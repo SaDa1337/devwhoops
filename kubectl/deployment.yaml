@@ -1,0 +1,70 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: killer-terrier-sp-generic-web
+  labels:
+    app: devwhoops
+    team: whoops
+    release: v1
+    os: "linux"
+    app.kubernetes.io/name: sp-generic-web
+    helm.sh/chart: sp-generic-web-1.0.7
+    app.kubernetes.io/instance: killer-terrier
+    app.kubernetes.io/managed-by: Tiller
+    heritage: Tiller
+  annotations:
+    app: devwhoops
+    team: whoops
+    release: v1
+    os: "linux"
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 50%
+      maxUnavailable: 0
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: sp-generic-web
+      app.kubernetes.io/instance: killer-terrier
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: sp-generic-web
+        app.kubernetes.io/instance: killer-terrier
+        app: devwhoops
+        team: whoops
+        release: v1
+        os: "linux"
+    spec:
+      containers:
+        - name: sp-generic-web
+          image: "sada1337/devwhoops:v1"
+          imagePullPolicy: Always
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Production"
+          ports:
+            - name: http
+              containerPort:  80
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+              scheme: HTTP
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+              scheme: HTTP
+            initialDelaySeconds: 20
+            timeoutSeconds: 3
+            periodSeconds: 5
+            failureThreshold: 6
+          resources:
+            null

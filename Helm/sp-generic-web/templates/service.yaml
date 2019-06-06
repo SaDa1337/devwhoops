@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "sp-generic-web.fullname" . }}
+  labels:
+    app: {{ .Values.labels.app |quote }}
+    team: {{ .Values.labels.team|quote }}
+    release: {{ .Values.labels.release|quote }}
+    os: {{ .Values.labels.os |quote }}
+    app.kubernetes.io/name: {{ include "sp-generic-web.name" . }}
+    helm.sh/chart: {{ include "sp-generic-web.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort:  {{ .Values.service.targetport }}
+      protocol: TCP
+      name: http
+  sessionAffinity: {{ .Values.service.sessionAffinity }}
+  selector:
+    app.kubernetes.io/name: {{ include "sp-generic-web.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    os: {{ .Values.labels.os |quote }}
